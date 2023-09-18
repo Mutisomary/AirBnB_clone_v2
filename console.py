@@ -12,6 +12,19 @@ from models.amenity import Amenity
 from models.review import Review
 
 
+def tokenize(args: str) -> list:
+    """Tokenizer.
+
+    Args:
+        args (str): console input
+
+    Returns:
+        list: list of tokens
+    """
+
+    tokens = args.split()
+    return tokens
+
 class HBNBCommand(cmd.Cmd):
     """ Contains the functionality for the HBNB console"""
 
@@ -73,7 +86,7 @@ class HBNBCommand(cmd.Cmd):
                 pline = pline[2].strip()  # pline is now str
                 if pline:
                     # check for *args or **kwargs
-                    if pline[0] is '{' and pline[-1] is'}'\
+                    if pline[0] == '{' and pline[-1] =='}'\
                             and type(eval(pline)) is dict:
                         _args = pline
                     else:
@@ -115,14 +128,38 @@ class HBNBCommand(cmd.Cmd):
 
     def do_create(self, args):
         """ Create an object of any class"""
-        if not args:
+        # Tokenize the args from the console
+        tokens = tokenize(args)
+        # check if args passed
+        if args == "":
             print("** class name missing **")
             return
-        elif args not in HBNBCommand.classes:
+        # extract the class name
+        class_name = tokens[0]
+        # extract all params
+        params = tokens[1:]
+
+        # if class not in class
+        if class_name not in HBNBCommand.classes:
             print("** class doesn't exist **")
             return
-        new_instance = HBNBCommand.classes[args]()
-        storage.save()
+        # create a new class instance
+        new_instance = HBNBCommand.classes[class_name]()
+        # loop through all params and setattr to the object instance
+        for param in params:
+            try:
+                k, v = param.split("=")
+                v = v.replace("_", " ")
+                if v[0] == '"' and v[-1] == '"' and len(v) > 1:
+                    v = v[1:-1]
+                elif "." in v:
+                    v = float(v)
+                else:
+                    v = int(v)
+                setattr(new_instance, k, v)
+            except ValueError:
+                continue
+        new_instance.save()
         print(new_instance.id)
         storage.save()
 
@@ -272,7 +309,7 @@ class HBNBCommand(cmd.Cmd):
                 args.append(v)
         else:  # isolate args
             args = args[2]
-            if args and args[0] is '\"':  # check for quoted arg
+            if args and args[0] == '\"':  # check for quoted arg
                 second_quote = args.find('\"', 1)
                 att_name = args[1:second_quote]
                 args = args[second_quote + 1:]
@@ -280,10 +317,10 @@ class HBNBCommand(cmd.Cmd):
             args = args.partition(' ')
 
             # if att_name was not quoted arg
-            if not att_name and args[0] is not ' ':
+            if not att_name and args[0] != ' ':
                 att_name = args[0]
             # check for quoted val arg
-            if args[2] and args[2][0] is '\"':
+            if args[2] and args[2][0] == '\"':
                 att_val = args[2][1:args[2].find('\"', 1)]
 
             # if att_val was not quoted arg
