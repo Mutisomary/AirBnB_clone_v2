@@ -254,9 +254,11 @@ class HBNBCommand(cmd.Cmd):
             objects = storage.all()
 
         for obj in objects.values():
-            print_list.append(obj.to_dict())
+            obj_repr = "[{}] ({}) {}".format(obj.__class__.__name__, obj.id, obj.to_dict())
+            print_list.append(obj_repr)
 
         print(print_list)
+
 
     def help_all(self):
         """ Help information for the all command """
