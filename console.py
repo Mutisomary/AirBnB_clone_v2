@@ -254,7 +254,7 @@ class HBNBCommand(cmd.Cmd):
             objects = storage.all()
 
         for obj in objects.values():
-            print_list.append(str(obj))
+            print_list.append(obj.to_dict())
 
         print(print_list)
 
