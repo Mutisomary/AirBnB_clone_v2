@@ -5,7 +5,6 @@ from models.base_model import BaseModel
 from sqlalchemy import Column, String
 from sqlalchemy.orm import relationship
 from models.base_model import BaseModel, Base
-from models.city import City  # Import the City class
 
 class State(BaseModel, Base):
     """ The state class, contains name """
@@ -16,9 +15,9 @@ class State(BaseModel, Base):
     @property
     def city_list(self):
         """Property that returns a list of City objects associated with this State."""
-        from models import storage
         city_list = []
-        for key, city in storage.all(City).items():
+        from models import storage  # Import locally to avoid circular import
+        for key, city in storage.all('City').items():  # Use the class name as a string
             if city.state_id == self.id:
                 city_list.append(city)
         return city_list
