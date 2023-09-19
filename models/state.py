@@ -14,7 +14,8 @@ class State(BaseModel, Base):
     cities = relationship("City", backref="state", cascade="all, delete-orphan")
 
     @property
-    def cities(self):
+    def city_list(self):
+        """Property that returns a list of City objects associated with this State."""
         from models import storage
         city_list = []
         for key, city in storage.all(City).items():
