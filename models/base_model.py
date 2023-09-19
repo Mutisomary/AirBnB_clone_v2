@@ -43,18 +43,16 @@ class BaseModel:
         storage.save()
 
     def to_dict(self):
-        """Converts the instance into dict format"""
+        """Convert instance into dict format"""
         dictionary = {}
         for key, value in self.__dict__.items():
-            if key != '_sa_instance_state' and key != '__class__':
+            if key != '_sa_instance_state':
                 dictionary[key] = value
         dictionary['__class__'] = type(self).__name__
         dictionary['created_at'] = self.created_at.isoformat()
         dictionary['updated_at'] = self.updated_at.isoformat()
-        if '_sa_instance_state' in dictionary:
-            del dictionary['_sa_instance_state']
         return dictionary
-
+    
     def delete(self):
         """ delete an instance of object from storage"""
         from models import storage
