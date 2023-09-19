@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 """ State Module for HBNB project """
 
-from models.base_model import BaseModel
+
 from sqlalchemy import Column, String
 from sqlalchemy.orm import relationship
 from models.base_model import BaseModel, Base
@@ -15,19 +15,10 @@ class State(BaseModel, Base):
 
     @property
     def cities(self):
+        """Property that returns a list of City objects associated with this State."""
         from models import storage
         city_list = []
         for key, city in storage.all(City).items():
             if city.state_id == self.id:
                 city_list.append(city)
         return city_list
-    
-    def __init__(self, *args, **kwargs):
-        """
-        Initialize a new State instance.
-
-        Args:
-            *args: Variable length argument list.
-            **kwargs: Arbitrary keyword arguments.
-        """
-        super().__init__(*args, **kwargs)
