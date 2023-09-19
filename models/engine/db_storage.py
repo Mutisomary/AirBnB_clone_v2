@@ -32,10 +32,15 @@ class DBStorage:
     def all(self, cls=None):
         """Query objects from the database"""
         obj_dict = {}
+        
         if cls:
             objects = self.__session.query(cls).all()
         else:
-            objects = [User, State, City, Amenity, Place, Review]
+            classes = [User, State, City, Amenity, Place, Review]
+            objects = []
+            for cls in classes:
+                objects.extend(self.__session.query(cls).all())
+
         for obj in objects:
             key = "{}.{}".format(obj.__class__.__name__, obj.id)
             obj_dict[key] = obj
