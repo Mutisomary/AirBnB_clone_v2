@@ -16,6 +16,7 @@ class State(BaseModel, Base):
     def city_list(self):
         """Property that returns a list of City objects associated with this State."""
         city_list = []
+        from models.city import City
         from models import storage  # Import locally to avoid circular import
         for key, city in storage.all('City').items():  # Use the class name as a string
             if city.state_id == self.id:
