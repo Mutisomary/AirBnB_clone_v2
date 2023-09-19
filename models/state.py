@@ -21,3 +21,13 @@ class State(BaseModel, Base):
             if city.state_id == self.id:
                 city_list.append(city)
         return city_list
+    
+    def __init__(self, *args, **kwargs):
+        """
+        Initialize a new State instance.
+
+        Args:
+            *args: Variable length argument list.
+            **kwargs: Arbitrary keyword arguments.
+        """
+        super().__init__(*args, **kwargs)
