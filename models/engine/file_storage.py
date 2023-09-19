@@ -53,10 +53,13 @@ class FileStorage:
                 temp = json.load(f)
                 for key, val in temp.items():
                     class_name = val['__class__']
-                    obj = self.all(classes[class_name])
-                    obj[key] = obj(**val)
+                    obj_key = "{}.{}".format(class_name, val['id'])
+                    if obj_key in self.__objects:
+                        obj = self.__objects[obj_key]
+                        obj.__dict__.update(val)  # Update the object's attributes
         except FileNotFoundError:
             pass
+
 
 
     def delete(self, obj=None):
