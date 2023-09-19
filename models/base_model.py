@@ -45,19 +45,28 @@ class BaseModel:
     def to_dict(self):
         """Converts the instance into dict format"""
         dictionary = {}
+        has_class_key = False  # Flag to check if '__class__' key is added
+
         for key, value in self.__dict__.items():
-            if key != '_sa_instance_state' and key != '__class__':
+            if key != '_sa_instance_state':
                 dictionary[key] = value
+
         dictionary['created_at'] = self.created_at.isoformat()
         dictionary['updated_at'] = self.updated_at.isoformat()
-        
+
+        if '__class__' in dictionary:
+            has_class_key = True
+            del dictionary['__class__']
+
         if '_sa_instance_state' in dictionary:
             del dictionary['_sa_instance_state']
-        
-        if '__class__' in dictionary:
-            del dictionary['__class__']
-        
+
+        # Add '__class__' back to dictionary if it was originally present
+        if has_class_key:
+            dictionary['__class__'] = type(self).__name__
+
         return dictionary
+
 
 
     def delete(self):
