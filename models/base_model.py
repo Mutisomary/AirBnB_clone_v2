@@ -46,14 +46,19 @@ class BaseModel:
         """Converts the instance into dict format"""
         dictionary = {}
         for key, value in self.__dict__.items():
-            if key != '_sa_instance_state':
+            if key != '_sa_instance_state' and key != '__class__':
                 dictionary[key] = value
-        dictionary['__class__'] = type(self).__name__
         dictionary['created_at'] = self.created_at.isoformat()
         dictionary['updated_at'] = self.updated_at.isoformat()
+        
         if '_sa_instance_state' in dictionary:
             del dictionary['_sa_instance_state']
+        
+        if '__class__' in dictionary:
+            del dictionary['__class__']
+        
         return dictionary
+
 
     def delete(self):
         """ delete an instance of object from storage"""
