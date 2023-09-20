@@ -32,7 +32,7 @@ class Place(BaseModel, Base):
             extend_existing=True
         )
 
-        amenities = relationship("Amenity", secondary=place_amenity, viewonly=False)
+        amenities = relationship("Amenity", secondary=place_amenity, viewonly=False, overlaps="places")
 
     else:
         # For FileStorage
