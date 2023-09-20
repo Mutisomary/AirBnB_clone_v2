@@ -1,4 +1,5 @@
 #!/usr/bin/python3
+""" Amenity Module for HBNB project """
 from models.base_model import BaseModel, Base
 from sqlalchemy import Column, String, Table, ForeignKey
 from sqlalchemy.orm import relationship
@@ -9,8 +10,7 @@ if getenv("HBNB_TYPE_STORAGE") == "db":
         "place_amenity",
         Base.metadata,
         Column("place_id", String(60), ForeignKey("places.id"), primary_key=True, nullable=False),
-        Column("amenity_id", String(60), ForeignKey("amenities.id"), primary_key=True, nullable=False),
-        extend_existing=True
+        Column("amenity_id", String(60), ForeignKey("amenities.id"), primary_key=True, nullable=False)
     )
 
 class Amenity(BaseModel, Base):
