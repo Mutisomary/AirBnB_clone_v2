@@ -5,7 +5,7 @@ from sqlalchemy.orm import relationship
 from models.base_model import BaseModel, Base
 from os import getenv
 
-class Place(BaseModel):
+class Place(BaseModel, Base):
     """ A place to stay """
     if getenv("HBNB_TYPE_STORAGE") == "db":
         # For DBStorage
@@ -35,14 +35,13 @@ class Place(BaseModel):
         amenities = relationship("Amenity", secondary=place_amenity, viewonly=False)
 
     else:
+        # For FileStorage
         @property
         def reviews(self):
             from models import storage
             review_instances = storage.all("Review").values()
-            return [review for review in review_instances
-                    if review.place_id == self.id]
+            return [review for review in review_instances if review.place_id == self.id]
 
-        # For FileStorage
         @property
         def amenities(self):
             """ Getter attribute for amenities """
@@ -60,3 +59,4 @@ class Place(BaseModel):
             from models.amenity import Amenity
             if isinstance(obj, Amenity):
                 self.amenity_ids.append(obj.id)
+
