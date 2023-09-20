@@ -10,6 +10,7 @@ if getenv("HBNB_TYPE_STORAGE") == "db":
         Base.metadata,
         Column("place_id", String(60), ForeignKey("places.id"), primary_key=True, nullable=False),
         Column("amenity_id", String(60), ForeignKey("amenities.id"), primary_key=True, nullable=False)
+        extend_existing=True
     )
 
 class Amenity(BaseModel, Base):
