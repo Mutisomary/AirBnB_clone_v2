@@ -21,6 +21,8 @@ class Place(BaseModel):
         latitude = Column(Float, nullable=True)
         longitude = Column(Float, nullable=True)
 
+        reviews = relationship("Review", backref="place", cascade="all, delete-orphan")
+
         # Define the many-to-many relationship with Amenity using place_amenity
         place_amenity = Table(
             "place_amenity",
@@ -33,6 +35,13 @@ class Place(BaseModel):
         amenities = relationship("Amenity", secondary=place_amenity, viewonly=False)
 
     else:
+        @property
+        def reviews(self):
+            from models import storage
+            review_instances = storage.all("Review").values()
+            return [review for review in review_instances
+                    if review.place_id == self.id]
+
         # For FileStorage
         @property
         def amenities(self):
