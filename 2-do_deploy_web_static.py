@@ -32,8 +32,8 @@ def do_pack():
 def do_deploy(archive_path):
     """use os module to check for valid file path"""
     if os.path.exists(archive_path):
-        archive = archive_path.split('/')[1]
-        a_path = "/tmp/{}".format(archive)
+        archived = archive_path.split('/')[1]
+        a_path = "/tmp/{}".format(archived)
         folder = archive.split('.')[0]
         f_path = "/data/web_static/releases/{}/".format(folder)
 
