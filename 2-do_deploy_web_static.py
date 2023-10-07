@@ -1,62 +1,53 @@
 #!/usr/bin/python3
 """
-Distributing an archive to your web servers module
+This fabfile distributes an archive to my web servers
 """
-from fabric.api import env, put, run, local
-from os.path import exists
+
+import os
+from fabric.api import *
 from datetime import datetime
+
 
 env.hosts = ['54.237.21.182', '35.175.104.231']
 env.user = 'ubuntu'
 
 
 def do_pack():
-    """create a .tgz archive from web_static folder"""
-    # get the current time and date
-    time = datetime.now().strftime("%Y%m%d%H%M%S")
+    """Create a tar gzipped archive of the directory web_static."""
+    # obtain the current date and time
+    now = datetime.now().strftime("%Y%m%d%H%M%S")
 
-    # create a directory
+    # Construct path where archive will be saved
+    archive_path = "versions/web_static_{}.tgz".format(now)
+
+    # use fabric function to create directory if it doesn't exist
     local("mkdir -p versions")
 
-    # path where the archive file will be stored
-    path = "versions/web_static_{}.tgz".format(time)
-
-    # create a compressed file
-    archived = local("tar -cvzf {} web_static".format(path))
+    # Use tar command to create a compresses archive
+    archived = local("tar -cvzf {} web_static".format(archive_path))
 
     # Check archive Creation Status
     if archived.return_code != 0:
         return None
     else:
-        return path
+        return archive_path
 
 
 def do_deploy(archive_path):
-    """Distribute an archive to your web servers"""
-    if not exists(archive_path):
-        return False
+    '''use os module to check for valid file path'''
+    if os.path.exists(archive_path):
+        archive = archive_path.split('/')[1]
+        a_path = "/tmp/{}".format(archive)
+        folder = archive.split('.')[0]
+        f_path = "/data/web_static/releases/{}/".format(folder)
 
-    try:
-        # Upload the archive to the /tmp/ directory of the web server
-        put(archive_path, "/tmp/")
-
-        # Extract the archive to the folder /data/web_static/releases/<archive filename without extension>
-        archive_filename = archive_path.split("/")[-1]
-        archive_folder = archive_filename.replace(".tgz", "")
-        remote_path = "/data/web_static/releases/{}".format(archive_folder)
-        run("mkdir -p {}".format(remote_path))
-        run("tar -xzf /tmp/{} -C {}".format(archive_filename, remote_path))
-
-        # Delete the archive from the web server
-        run("rm /tmp/{}".format(archive_filename))
-
-        # Delete the symbolic link /data/web_static/current from the web server
+        put(archive_path, a_path)
+        run("mkdir -p {}".format(f_path))
+        run("tar -xzf {} -C {}".format(a_path, f_path))
+        run("rm {}".format(a_path))
+        run("mv -f {}web_static/* {}".format(f_path, f_path))
+        run("rm -rf {}web_static".format(f_path))
         run("rm -rf /data/web_static/current")
-
-        # Create a new symbolic link /data/web_static/current on the web server
-        run("ln -s {} /data/web_static/current".format(remote_path))
-
-        print("New version deployed!")
+        run("ln -s {} /data/web_static/current".format(f_path))
         return True
-    except Exception as e:
-        return False
+    return False
