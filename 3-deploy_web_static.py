@@ -54,15 +54,12 @@ def do_deploy(archive_path):
 
 
 def deploy():
-    # Call do_pack to create an archive
+    """
+    Create and archive and get its path
+    """
     archive_path = do_pack()
-
-    # Check if archive was created successfully
     if archive_path is None:
         return False
+    return do_deploy(archive_path)
 
-    # Call do_deploy to distribute the archive
-    deploy_result = do_deploy(archive_path)
 
-    # Return the result of do_deploy
-    return deploy_result
