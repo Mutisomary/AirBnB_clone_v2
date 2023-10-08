@@ -1,55 +1,34 @@
-# Install Nginx and configure it
-exec { 'update_apt':
+# puppet manifest preparing a server for static content deployment
+exec { 'apt-get-update':
   command => '/usr/bin/env apt-get -y update',
 }
-
-exec { 'install_nginx':
+-> exec {'b':
   command => '/usr/bin/env apt-get -y install nginx',
 }
-
-# Configure Nginx to serve web content
-file { '/etc/nginx/sites-available/default':
-  content => template('nginx/default.erb'),
-  require => Exec['install_nginx'],
+-> exec {'c':
+  command => '/usr/bin/env mkdir -p /data/web_static/releases/test/',
 }
-
-# Ensure Nginx is running and set to start on boot
-service { 'nginx':
-  ensure  => 'running',
-  enable  => true,
-  require => [Exec['install_nginx'], File['/etc/nginx/sites-available/default']],
+-> exec {'d':
+  command => '/usr/bin/env mkdir -p /data/web_static/shared/',
 }
-
-# Create directory structure for web_static
-file { '/data/web_static/releases/test':
-  ensure => 'directory',
+-> exec {'e':
+  command => '/usr/bin/env echo "<html>
+  <head>
+  </head>
+  <body>
+	Holberton School
+  </body>
+</html>" > /data/web_static/releases/test/index.html',
 }
-
-file { '/data/web_static/shared':
-  ensure => 'directory',
+-> exec {'f':
+  command => '/usr/bin/env ln -sf /data/web_static/releases/test /data/web_static/current',
 }
-
-# Create a custom 404 error page
-file { '/var/www/html/custom_404.html':
-  ensure  => 'file',
-  content => 'Ceci n\'est pas une page',
+-> exec {'h':
+  command => '/usr/bin/env sed -i "/listen 80 default_server/a location /hbnb_static/ { alias /data/web_static/current/;}" /etc/nginx/sites-available/default',
 }
-
-# Create a sample index.html file
-file { '/data/web_static/releases/test/index.html':
-  ensure  => 'file',
-  content => 'Hello nginx!',
+-> exec {'i':
+  command => '/usr/bin/env chown -R ubuntu:ubuntu /data',
 }
-
-# Create a symbolic link for web_static
-file { '/data/web_static/current':
-  ensure  => 'link',
-  target  => '/data/web_static/releases/test',
-  require => [File['/data/web_static/releases/test/index.html']],
-}
-
-# Additional Nginx configuration, e.g., custom headers
-file { '/etc/nginx/sites-available/default':
-  content => template('nginx/default.erb'),
-  require => File['/var/www/html/custom_404.html'],
+-> exec {'g':
+  command => '/usr/bin/env service nginx restart',
 }
