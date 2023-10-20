@@ -12,6 +12,7 @@ from models.amenity import Amenity
 from models.place import Place
 from models.review import Review
 
+
 class DBStorage:
     """This class manages storage of hbnb models using SQLAlchemy and MySQL"""
 
@@ -32,7 +33,7 @@ class DBStorage:
     def all(self, cls=None):
         """Query objects from the database"""
         obj_dict = {}
-        
+
         if cls:
             objects = self.__session.query(cls).all()
         else:
@@ -63,7 +64,7 @@ class DBStorage:
         """Create all tables and create a session"""
         Base.metadata.create_all(self.__engine)
         self.__session = scoped_session(sessionmaker(bind=self.__engine,
-                                                      expire_on_commit=False))
+                                        expire_on_commit=False))
 
     def close(self):
         """Call remove() method on the private session attribute"""

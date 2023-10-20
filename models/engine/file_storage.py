@@ -56,18 +56,15 @@ class FileStorage:
                     obj_key = "{}.{}".format(class_name, val['id'])
                     if obj_key in self.__objects:
                         obj = self.__objects[obj_key]
-                        obj.__dict__.update(val)  # Update the object's attributes
+                        obj.__dict__.update(val)
         except FileNotFoundError:
             pass
-
-
 
     def delete(self, obj=None):
         """Delete obj from __objects if it exists"""
         if obj:
             key = "{}.{}".format(type(obj).__name__, obj.id)
             del self.__objects[key]
-
 
     def close(self):
         """method for deserializing the JSON file"""
