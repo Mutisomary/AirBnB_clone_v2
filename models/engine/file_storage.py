@@ -64,6 +64,11 @@ class FileStorage:
 
     def delete(self, obj=None):
         """Delete obj from __objects if it exists"""
-        if obj is not None:
+        if obj:
             key = "{}.{}".format(type(obj).__name__, obj.id)
-            self.__objects.pop(key, None)
+            del self.__objects[key]
+
+
+    def close(self):
+        """method for deserializing the JSON file"""
+        self.reload()
