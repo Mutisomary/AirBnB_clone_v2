@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>HBNB</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/3-header.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/3-footer.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/4-common.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/6-filters.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/8-places.css') }}">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="logo">
+                <img src="{{ url_for('static', filename='images/logo.png') }}" alt="HolbertonBnB Logo">
+                <h1>HolbertonBnB</h1>
+            </div>
+            <nav class="menu">
+                <ul>
+                    <li><a href="#">Places</a></li>
+                    <li><a href="#">States</a></li>
+                    <li><a href="#">Amenities</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+    <div class="container">
+        <div class="filters">
+            <h3>&nbsp;</h3>
+            <div class="places">
+                <h1>Places</h1>
+                <div class="box">
+                    <h2>&nbsp;</h2>
+                    <ul>
+                        {% for state in states %}
+                        <li>{{ state.name }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                <div class="box">
+                    <h2>&nbsp;</h2>
+                    <ul>
+                        {% for amenity in amenities %}
+                        <li>{{ amenity.name }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="places-list">
+            <h1>Places</h1>
+            <div class="place">
+                <h2>&nbsp;</h2>
+                <ul>
+                    {% for place in places %}
+                    <li>{{ place.name }}<br/>{{ place.description }}<br/>{{ place.number_rooms }} Bedrooms<br/>{{ place.number_bathrooms }} Bathroom<br/>Max Guest: {{ place.max_guest }}<br/>Price by night: ${{ place.price_by_night }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+    <footer class="footer">
+        <div class="container">
+            <p>HolbertonBnB project</p>
+        </div>
+    </footer>
+</body>
+</html>
